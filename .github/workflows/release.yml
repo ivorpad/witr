@@ -16,9 +16,9 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  # Track the latest 1.25.x patch (with check-latest below) so release binaries
+  # Track the latest 1.27.x patch (with check-latest below) so release binaries
   # pick up stdlib security fixes.
-  GO_VERSION: '1.25'
+  GO_VERSION: '1.27'
   PROJECT_NAME: witr
 
 jobs:

@@ -22,7 +22,7 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v6
         with:
-          go-version: '1.25'
+          go-version: '1.27.4'
           check-latest: true
 
       - name: Verify formatting
@@ -73,7 +73,7 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v6
         with:
-          go-version: '1.25'
+          go-version: '1.27.4'
           check-latest: true
 
       # Lint each platform's build tags in turn. Without this, _windows/_darwin/
@@ -96,7 +96,7 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v6
         with:
-          go-version: '1.25'
+          go-version: '1.27.4'
           check-latest: true
 
       - name: Run govulncheck
@@ -112,7 +112,7 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v6
         with:
-          go-version: '1.25'
+          go-version: '1.27.4'
           check-latest: true
 
       - name: Verify vendor is in sync
@@ -142,7 +142,7 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v6
         with:
-          go-version: '1.25'
+          go-version: '1.27.4'
           check-latest: true
 
       - name: Run tests
@@ -164,7 +164,7 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v6
         with:
-          go-version: '1.25'
+          go-version: '1.27.4'
           check-latest: true
 
       # Reports total coverage of the linux build; informational, no threshold gate.
