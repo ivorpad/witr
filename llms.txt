@@ -10,7 +10,7 @@
 
 ## Reference
 
-- [Flags & Options](https://github.com/pranshuparmar/witr#4-flags--options): full CLI flag reference (`--pid`, `--port`, `--file`, `--container`, `--json`, `--tree`, `--short`, `--exact`, `--verbose`, `--warnings`, etc.), all repeatable and combinable.
+- [Flags & Options](https://github.com/pranshuparmar/witr#4-flags--options): full CLI flag reference (`--pid`, `--port`, `--file`, `--container`, `--json`, `--tree`, `--short`, `--exact`, `--verbose`, `--warnings`, `--zombies`, `--suspects`, etc.), all repeatable and combinable.
 - [Core Concept](https://github.com/pranshuparmar/witr#5-core-concept): how witr maps ports/services/containers/commands to PIDs and builds the causal chain.
 - [Example Outputs](https://github.com/pranshuparmar/witr#6-example-outputs): name-based, short, tree, container, file, and multi-target query examples.
 - [Output Behavior](https://github.com/pranshuparmar/witr#7-output-behavior): output principles, exit codes (0-6), and standard output sections.

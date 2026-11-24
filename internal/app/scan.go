@@ -49,7 +49,7 @@ func runScan(cmd *cobra.Command, args []string) error {
 		parents := suspects.Zombies(first, second)
 		if flags.json {
 			return writeJSON(outw, struct {
-				Parents []suspects.ZombieParent `json:"parents"`
+				Parents []suspects.ZombieParent
 			}{Parents: nonNil(parents)})
 		}
 		output.RenderZombies(outw, parents, now, useColor(flags, outw))
@@ -66,9 +66,9 @@ func runScan(cmd *cobra.Command, args []string) error {
 	hidden := len(all) - len(shown)
 	if flags.json {
 		return writeJSON(outw, struct {
-			Suspects []suspects.Suspect `json:"suspects"`
-			Hidden   int                `json:"hidden"`
-		}{Suspects: shown, Hidden: hidden})
+			Suspects []suspects.Suspect
+			Hidden   int
+		}{Suspects: nonNil(shown), Hidden: hidden})
 	}
 	output.RenderSuspects(outw, shown, hidden, now, useColor(flags, outw))
 	return nil

@@ -17,17 +17,17 @@ import (
 // exit status. StartedAt is when the process started, not when it exited:
 // the OS does not record the time of death.
 type Zombie struct {
-	PID       int       `json:"pid"`
-	StartedAt time.Time `json:"startedAt"`
+	PID       int
+	StartedAt time.Time
 }
 
 // ZombieParent is a process holding one or more zombie children.
 type ZombieParent struct {
-	PID     int      `json:"pid"`
-	Command string   `json:"command"`
-	Cmdline string   `json:"cmdline"`
-	User    string   `json:"user"`
-	Zombies []Zombie `json:"zombies"`
+	PID     int
+	Command string
+	Cmdline string
+	User    string
+	Zombies []Zombie
 }
 
 // Reason codes. Strong reasons are enough on their own to list a process;
@@ -43,22 +43,22 @@ const (
 
 // Reason explains one thing that makes a process suspect.
 type Reason struct {
-	Code   string `json:"code"`
-	Detail string `json:"detail"`
-	Strong bool   `json:"strong"`
+	Code   string
+	Detail string
+	Strong bool
 }
 
 // Suspect is a process with at least one reason to look at it.
 type Suspect struct {
-	PID        int       `json:"pid"`
-	PPID       int       `json:"ppid"`
-	User       string    `json:"user"`
-	Command    string    `json:"command"`
-	Cmdline    string    `json:"cmdline"`
-	StartedAt  time.Time `json:"startedAt"`
-	CPUPercent float64   `json:"cpuPercent"`
-	MemoryRSS  uint64    `json:"memoryRSS"`
-	Reasons    []Reason  `json:"reasons"`
+	PID        int
+	PPID       int
+	User       string
+	Command    string
+	Cmdline    string
+	StartedAt  time.Time
+	CPUPercent float64
+	MemoryRSS  uint64
+	Reasons    []Reason
 }
 
 // Strong reports whether any reason is strong on its own.
@@ -97,13 +97,21 @@ func persistent(first, second []model.Process, want string) map[int]model.Proces
 		}
 		if second != nil {
 			q, ok := again[p.PID]
-			if !ok || q.PPID != p.PPID || !q.StartedAt.Equal(p.StartedAt) {
+			if !ok || q.PPID != p.PPID || !sameStart(q.StartedAt, p.StartedAt) {
 				continue
 			}
 		}
 		out[p.PID] = p
 	}
 	return out
+}
+
+// sameStart reports whether two start times read from separate process lists
+// name the same process. They are derived from boot time, which the OS may
+// report a second off between reads, while a reused PID starts much later.
+func sameStart(a, b time.Time) bool {
+	d := a.Sub(b)
+	return d < 2*time.Second && d > -2*time.Second
 }
 
 // Zombies groups the zombies present in both snapshots by parent, parents

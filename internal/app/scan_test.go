@@ -51,11 +51,11 @@ func TestScanSuspectsJSONWithSusAlias(t *testing.T) {
 		t.Fatalf("--sus --json: %v\n%s", err, out)
 	}
 	var got struct {
-		Suspects []map[string]any `json:"suspects"`
-		Hidden   *int             `json:"hidden"`
+		Suspects []map[string]any
+		Hidden   *int
 	}
 	if err := json.Unmarshal([]byte(out), &got); err != nil || got.Suspects == nil || got.Hidden == nil {
-		t.Fatalf("want {suspects: [...], hidden: n}, got err=%v:\n%s", err, out)
+		t.Fatalf("want {Suspects: [...], Hidden: n}, got err=%v:\n%s", err, out)
 	}
 }
 
@@ -65,10 +65,10 @@ func TestScanZombiesJSON(t *testing.T) {
 		t.Fatalf("--zombies --json: %v\n%s", err, out)
 	}
 	var got struct {
-		Parents []map[string]any `json:"parents"`
+		Parents []map[string]any
 	}
 	if err := json.Unmarshal([]byte(out), &got); err != nil || got.Parents == nil {
-		t.Fatalf("want {parents: [...]}, got err=%v:\n%s", err, out)
+		t.Fatalf("want {Parents: [...]}, got err=%v:\n%s", err, out)
 	}
 }
 

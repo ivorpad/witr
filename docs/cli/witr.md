@@ -38,6 +38,12 @@ witr [process name...] [flags]
   # Show only warnings (suspicious env, arguments, parents)
   witr docker --warnings
 
+  # List zombie processes, grouped by the parent that should collect them
+  witr --zombies
+
+  # List processes that look left behind (deleted binary or directory, stopped, detached copies)
+  witr --sus
+
   # Display only environment variables of the process
   witr node --env
 

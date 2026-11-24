@@ -13,10 +13,11 @@ import (
 const cmdlineWidth = 110
 
 func clip(s string) string {
-	if len(s) <= cmdlineWidth {
+	r := []rune(s)
+	if len(r) <= cmdlineWidth {
 		return s
 	}
-	return s[:cmdlineWidth-1] + "…"
+	return string(r[:cmdlineWidth-1]) + "…"
 }
 
 // paint sanitizes s and, when color is on, wraps it in color. The result is

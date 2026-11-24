@@ -175,3 +175,12 @@ func TestAge(t *testing.T) {
 		}
 	}
 }
+
+func TestZombieStartJitterStillPersistent(t *testing.T) {
+	first := []model.Process{p(10, 1, "", "server", time.Hour), p(11, 10, "zombie", "<defunct>", time.Hour)}
+	jittered := first[1]
+	jittered.StartedAt = jittered.StartedAt.Add(time.Second)
+	if got := Zombies(first, []model.Process{first[0], jittered}); len(got) != 1 {
+		t.Fatalf("a start time one second off between reads is the same zombie, got %+v", got)
+	}
+}
