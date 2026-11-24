@@ -19,6 +19,7 @@ import (
 	"github.com/pranshuparmar/witr/internal/tui"
 	"github.com/pranshuparmar/witr/pkg/model"
 	"github.com/spf13/cobra"
+	"github.com/spf13/pflag"
 )
 
 var (
@@ -171,6 +172,14 @@ func init() {
 	rootCmd.Flags().Bool("verbose", false, "show extended process information")
 	rootCmd.Flags().BoolP("exact", "x", false, "use exact name matching (no substring search)")
 	rootCmd.Flags().BoolP("interactive", "i", false, "interactive mode (TUI)")
+	rootCmd.Flags().Bool("zombies", false, "list zombie processes grouped by the parent that has not collected them")
+	rootCmd.Flags().Bool("suspects", false, "list processes that look left behind (alias --sus; --verbose includes weak signals)")
+	rootCmd.Flags().SetNormalizeFunc(func(_ *pflag.FlagSet, name string) pflag.NormalizedName {
+		if name == "sus" {
+			name = "suspects"
+		}
+		return pflag.NormalizedName(name)
+	})
 
 }
 
@@ -190,6 +199,10 @@ func runApp(cmd *cobra.Command, args []string) error {
 	interactiveFlag, _ := cmd.Flags().GetBool("interactive")
 	if interactiveFlag {
 		return runInteractive(orderedTargets(cmd, os.Args[1:], args), boolFlag(cmd, "exact"))
+	}
+
+	if boolFlag(cmd, "zombies") || boolFlag(cmd, "suspects") {
+		return runScan(cmd, args)
 	}
 
 	envFlag, _ := cmd.Flags().GetBool("env")

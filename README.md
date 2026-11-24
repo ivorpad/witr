@@ -560,10 +560,12 @@ Running `witr` without any arguments or with the `-i` flag launches the **Intera
   -p, --pid strings      pid(s) to look up (repeatable)
   -o, --port strings     port(s) to look up (repeatable)
   -s, --short            show only ancestry
+      --suspects         list processes that look left behind (alias --sus)
   -t, --tree             show only ancestry as a tree
       --verbose          show extended process information
   -v, --version          version for witr
       --warnings         show only warnings
+      --zombies          list zombie processes grouped by their parent
 ```
 
 Positional arguments (without flags) are treated as process or service names. Multiple names can be passed. By default, name matching uses substring matching (fuzzy search). Use `--exact` to match only processes with the exact name.
@@ -573,6 +575,25 @@ All target flags (`--pid`, `--port`, `--file`, `--container`) are repeatable and
 The `--container` flag searches across Docker, Podman, nerdctl, K8s/crictl, Incus, LXC, LXD, and FreeBSD jails, and matches against container name, image, command, and compose project/service labels, or a container ID (full, short, or a prefix of at least 4 characters).
 
 The TUI is launched if no arguments or relevant flags (`--pid`, `--port`, `--file`, `--container`) are provided, or if the `--interactive` flag is explicitly used. It needs a terminal: run without one (from a script, a pipe or CI) and witr exits with code 4 and asks for a target instead. An output mode with no target (`witr --json`, `--short`, `--tree`, `--warnings`, `--verbose` or `--env`) also exits with code 4 and asks for a target, rather than opening the TUI.
+
+### Finding zombies and leftover processes
+
+`--zombies` and `--suspects` scan every process instead of explaining one target. Both take `--json` and `--no-color`, and neither takes a target.
+
+`witr --zombies` lists processes that have exited but whose parent never collected them, grouped by that parent. A zombie can't be killed. It goes away when the parent collects it or exits, so the parent is what to restart. The age shown is when the zombie started: the OS doesn't record when it exited.
+
+`witr --suspects` (or `--sus`) lists processes that look left behind. Each one comes with the reasons it was picked:
+
+| Reason | Strength | Meaning |
+|---|---|---|
+| `zombie-parent` | strong | Holds a zombie child that started at least 5 minutes ago and has not been collected |
+| `stopped` | strong | Stopped (T state, e.g. a forgotten Ctrl-Z job) |
+| `exe-deleted` | strong | Its executable was deleted or replaced on disk, so it runs a binary that no longer exists (often after an upgrade) |
+| `cwd-deleted` | strong | Its working directory was deleted, e.g. a dev server left in a removed worktree |
+| `detached` | weak | Outlived the session that started it: its session leader (the shell or launcher) has exited and it never started a session of its own |
+| `duplicate` | weak | One of several identical detached copies run by the same user |
+
+A process is listed when it has a strong reason or two weak ones. `--verbose` also lists processes with a single weak reason, which includes apps that detach helpers by design (crash reporters, for example). Zombie and stopped states are read twice, a second apart, so a process that is about to be collected or resumed isn't reported. Deleted executables and working directories are checked on Linux and macOS only. On Windows both modes run but find nothing, because it has no zombie, stopped or Unix session states.
 
 ---
 

@@ -69,19 +69,21 @@ witr [process name...] [flags]
 ### Options
 
 ```
-  -c, --container strings   container(s) to look up (repeatable)
-      --env                 show environment variables for the process
-  -x, --exact               use exact name matching (no substring search)
-  -f, --file strings        file(s) held open by a process (repeatable)
-  -h, --help                help for witr
-  -i, --interactive         interactive mode (TUI)
-      --json                show result as JSON
-      --no-color            disable colorized output
-  -p, --pid strings         pid(s) to look up (repeatable)
-  -o, --port strings        port(s) to look up (repeatable)
-  -s, --short               show only ancestry
-  -t, --tree                show only ancestry as a tree
-      --verbose             show extended process information
-      --warnings            show only warnings
+  -c, --container strings          container(s) to look up (repeatable)
+      --env[=true|false]           show environment variables for the process
+  -x, --exact[=true|false]         use exact name matching (no substring search)
+  -f, --file strings               file(s) held open by a process (repeatable)
+  -h, --help[=true|false]          help for witr
+  -i, --interactive[=true|false]   interactive mode (TUI)
+      --json[=true|false]          show result as JSON
+      --no-color[=true|false]      disable colorized output
+  -p, --pid strings                pid(s) to look up (repeatable)
+  -o, --port strings               port(s) to look up (repeatable)
+  -s, --short[=true|false]         show only ancestry
+      --suspects[=true|false]      list processes that look left behind (alias --sus; --verbose includes weak signals)
+  -t, --tree[=true|false]          show only ancestry as a tree
+      --verbose[=true|false]       show extended process information
+      --warnings[=true|false]      show only warnings
+      --zombies[=true|false]       list zombie processes grouped by the parent that has not collected them
 ```
 

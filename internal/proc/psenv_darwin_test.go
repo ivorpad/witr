@@ -39,8 +39,8 @@ case "$*" in
 	printf '%s\n' "  $cpu 20480"
 	;;
 *)
-	printf '%s\n' "  PID  PPID USER     STARTED  %CPU   RSS %MEM ARGS"
-	printf '%s\n' " 4242     1 testuser $lstart $cpu 20480 $mem /usr/local/bin/witrtest --serve"
+	printf '%s\n' "  PID  PPID USER     STAT STARTED  %CPU   RSS %MEM ARGS"
+	printf '%s\n' " 4242     1 testuser T    $lstart $cpu 20480 $mem /usr/local/bin/witrtest --serve"
 	;;
 esac
 `
@@ -82,6 +82,9 @@ func TestListProcessesIgnoresCallerLocale(t *testing.T) {
 			}
 			if p.MemoryPercent != 0.4 {
 				t.Errorf("MemoryPercent = %v, want 0.4", p.MemoryPercent)
+			}
+			if p.Health != "stopped" {
+				t.Errorf("Health = %q, want %q from STAT T", p.Health, "stopped")
 			}
 			if want := "/usr/local/bin/witrtest --serve"; p.Cmdline != want {
 				t.Errorf("Cmdline = %q, want %q", p.Cmdline, want)

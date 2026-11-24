@@ -1,5 +1,5 @@
 .nh
-.TH "WITR" "1" "Oct 2026" "" ""
+.TH "WITR" "1" "Nov 2026" "" ""
 
 .SH NAME
 witr - Why is this running?
@@ -58,6 +58,10 @@ witr explains why a process or port is running by tracing its ancestry.
 	show only ancestry
 
 .PP
+\fB--suspects\fP[=false]
+	list processes that look left behind (alias --sus; --verbose includes weak signals)
+
+.PP
 \fB-t\fP, \fB--tree\fP[=false]
 	show only ancestry as a tree
 
@@ -68,6 +72,10 @@ witr explains why a process or port is running by tracing its ancestry.
 .PP
 \fB--warnings\fP[=false]
 	show only warnings
+
+.PP
+\fB--zombies\fP[=false]
+	list zombie processes grouped by the parent that has not collected them
 
 
 .SH EXAMPLE

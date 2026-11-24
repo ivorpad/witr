@@ -21,7 +21,7 @@ func ListProcesses() ([]model.Process, error) {
 	// "Microsoft Teams") which breaks the strings.Fields column parse used below;
 	// it is fetched separately via readPIDCommMap() so the display name is taken
 	// from an unambiguous source rather than re-derived from the space-joined args.
-	cmd := exec.Command("ps", "-axo", "pid,ppid,user,lstart,%cpu,rss,%mem,args")
+	cmd := exec.Command("ps", "-axo", "pid,ppid,user,stat,lstart,%cpu,rss,%mem,args")
 	cmd.Env = buildEnvForPS()
 	out, err := cmd.Output()
 	if err != nil {
@@ -45,8 +45,8 @@ func ListProcesses() ([]model.Process, error) {
 		}
 		fields := strings.Fields(line)
 
-		// Expected minimum fields: pid(1) + ppid(1) + user(1) + lstart(5) + cpu(1) + rss(1) + mem(1) = 11
-		if len(fields) < 11 {
+		// Expected minimum fields: pid(1) + ppid(1) + user(1) + stat(1) + lstart(5) + cpu(1) + rss(1) + mem(1) = 12
+		if len(fields) < 12 {
 			continue
 		}
 
@@ -59,20 +59,21 @@ func ListProcesses() ([]model.Process, error) {
 			continue
 		}
 		user := fields[2]
+		state := fields[3]
 
 		// lstart format: "Mon Jan 1 12:00:00 2024" (5 fields)
-		timeStr := strings.Join(fields[3:8], " ")
+		timeStr := strings.Join(fields[4:9], " ")
 		started, _ := time.Parse("Mon Jan 2 15:04:05 2006", timeStr)
 
-		cpu, _ := strconv.ParseFloat(fields[8], 64)
-		rss, _ := strconv.ParseUint(fields[9], 10, 64)
+		cpu, _ := strconv.ParseFloat(fields[9], 64)
+		rss, _ := strconv.ParseUint(fields[10], 10, 64)
 		rss *= 1024
 
-		mem, _ := strconv.ParseFloat(fields[10], 64)
+		mem, _ := strconv.ParseFloat(fields[11], 64)
 
 		cmdline := ""
-		if len(fields) > 11 {
-			cmdline = strings.Join(fields[11:], " ")
+		if len(fields) > 12 {
+			cmdline = strings.Join(fields[12:], " ")
 		}
 
 		// Prefer the comm value (full executable path on macOS, captured
@@ -82,8 +83,8 @@ func ListProcesses() ([]model.Process, error) {
 		if displayName == "" {
 			displayName = extractExecutableName(cmdline)
 		}
-		if displayName == "" && len(fields) > 11 {
-			displayName = fields[11]
+		if displayName == "" && len(fields) > 12 {
+			displayName = fields[12]
 		}
 		if displayName == "" {
 			continue
@@ -101,6 +102,7 @@ func ListProcesses() ([]model.Process, error) {
 			CPUPercent:    cpu,
 			MemoryRSS:     rss,
 			MemoryPercent: mem,
+			Health:        listHealth(state),
 			Cmdline:       cmdline,
 		})
 	}

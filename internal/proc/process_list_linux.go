@@ -65,6 +65,7 @@ func readProcessListEntry(pid, ticks int, boot time.Time, totalMem, pageSize flo
 	}
 
 	ppid, _ := strconv.Atoi(fields[1])
+	session, _ := strconv.Atoi(fields[3])
 	utime, _ := strconv.ParseFloat(fields[11], 64)
 	stime, _ := strconv.ParseFloat(fields[12], 64)
 	startTicks, _ := strconv.ParseInt(fields[19], 10, 64)
@@ -105,6 +106,8 @@ func readProcessListEntry(pid, ticks int, boot time.Time, totalMem, pageSize flo
 		CPUPercent:    cpuPercent,
 		MemoryRSS:     uint64(memBytes),
 		MemoryPercent: memPercent,
+		Health:        listHealth(fields[0]),
+		Session:       session,
 	}, true
 }
 
